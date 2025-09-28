@@ -16,6 +16,7 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+
 # ---------------------------
 # Stage 2 - Final runtime image
 # ---------------------------
