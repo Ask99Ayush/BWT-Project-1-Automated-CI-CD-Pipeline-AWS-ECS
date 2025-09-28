@@ -1,18 +1,17 @@
-# Use the latest stable Python version
-FROM python:3.11
+# ---------------------------
+# Stage 1 - Builder
+# ---------------------------
+FROM python:3.11-slim AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy requirements file and install dependencies
+# Install build dependencies (for compiling C extensions if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependencies list
 COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the entire project
-COPY . .
-
-# Expose port (5000)
-EXPOSE 5000
-
-# Command to run the application using Gunicorn
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--workers", "3", "--timeout", "120", "--log-level", "debug"]
