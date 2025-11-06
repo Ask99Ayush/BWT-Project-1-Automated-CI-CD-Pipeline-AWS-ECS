@@ -1,41 +1,27 @@
-# ---------------------------
-# Stage 1 - Builder
-# ---------------------------
-FROM python:3.11-slim AS builder
+# Use lightweight Python image
+FROM python:3.10-slim
 
+# Set work directory
 WORKDIR /app
 
-# Install build dependencies (for compiling C extensions if needed)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Prevent Python from writing pyc files to disk & force stdout logs
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Copy dependencies list
-COPY requirements.txt .
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-
-# ---------------------------
-# Stage 2 - Final runtime image
-# ---------------------------
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Security best practice: create non-root user
-RUN useradd -m appuser
-USER appuser
-
-# Copy installed dependencies from builder stage
-COPY --from=builder /usr/local /usr/local
-
-# Copy application code
+# Copy project files
 COPY . .
 
-# Expose application port
-EXPOSE 5000
+# Expose Django’s port
+EXPOSE 8000
 
-# Run application with Gunicorn (production server)
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--workers", "3", "--timeout", "120", "--log-level", "info"]
+# Run the Django development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
