@@ -21,7 +21,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Kunalkthalautiya/Project-1-Automated-CI-CD-Pipeline-AWS-ECS.git'
+                git branch: 'main', url: 'https://github.com/Ask99Ayush/BWT-Project-1-Automated-CI-CD-Pipeline-AWS-ECS.git'
             }
         }
 
