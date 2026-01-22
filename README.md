@@ -46,8 +46,7 @@
 Step-by-Step Setup
 1. Clone the Repository
    ```sh
-   git clone https://github.com/Kunalkthalautiya/Project-1-Automated-CI-CD-Pipeline-AWS-ECS.git
-   cd Automated-CI-CD-Pipeline
+   git clone https://github.com/Ask99Ayush/BWT-Project-1-Automated-CI-CD-Pipeline-AWS-ECS.git
    ```
 2. Set up AWS ECS Cluster & Task Definition
 3. Configure AWS ECR for storing Docker images
